@@ -1,0 +1,197 @@
+---
+import AboutSidebar from "../components/AboutSidebar.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = "My Site", description = "Personal site and notes" } = Astro.props;
+const pathname = Astro.url.pathname;
+
+const links = [
+  { href: "/", label: "Home" },
+  { href: "/blog/", label: "Blog" },
+  { href: "/about/", label: "About" },
+];
+
+const isActive = (href: string) =>
+  href === "/" ? pathname === "/" : pathname.startsWith(href);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #ffffff;
+        --fg: #1f2328;
+        --muted: #59636e;
+        --border: #d1d9e0;
+        --link: #0969da;
+        --code-bg: #f6f8fa;
+        --max: 760px;
+        --sidebar: 240px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d1117;
+          --fg: #e6edf3;
+          --muted: #9198a1;
+          --border: #30363d;
+          --link: #4493f8;
+          --code-bg: #161b22;
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+      }
+      a { color: var(--link); }
+      img, video, iframe { max-width: 100%; }
+      img { height: auto; }
+
+      /* Main content stays centered; sidebar sits in the left margin/gutter. */
+      .site-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, var(--max)) minmax(0, 1fr);
+        column-gap: 2rem;
+        align-items: start;
+        padding: 0 1rem;
+      }
+      .about-sidebar {
+        grid-column: 1;
+        justify-self: end;
+        width: var(--sidebar);
+        padding-top: 1.25rem;
+        position: sticky;
+        top: 0;
+      }
+      .content-area {
+        grid-column: 2;
+        min-width: 0;
+      }
+
+      .about-card {
+        padding-left: 1rem;
+        border-left: 3px solid var(--border);
+        font-size: 0.9rem;
+      }
+      .sidebar-content :first-child { margin-top: 0; }
+      .sidebar-content :last-child { margin-bottom: 0; }
+      .sidebar-content p { margin: 0 0 0.75rem; }
+      .sidebar-content img {
+        width: 100%;
+        height: auto;
+        display: block;
+        margin-bottom: 0.75rem;
+        border: 1px solid var(--border);
+      }
+
+      header, main, footer {
+        max-width: var(--max);
+        margin: 0 auto;
+      }
+      header {
+        padding-top: 1.25rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border);
+      }
+      nav { display: flex; gap: 1rem; flex-wrap: wrap; }
+      nav a { color: var(--link); text-decoration: none; font-weight: 500; }
+      nav a[aria-current="page"] { color: var(--fg); text-decoration: underline; }
+      main { padding-top: 1.5rem; padding-bottom: 3rem; }
+      footer {
+        padding-top: 1rem;
+        padding-bottom: 2rem;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      pre {
+        padding: 1rem;
+        overflow: auto;
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+      }
+      code { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; }
+      :not(pre) > code {
+        padding: 0.15em 0.35em;
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+      blockquote {
+        margin: 1rem 0;
+        padding: 0 1rem;
+        color: var(--muted);
+        border-left: 4px solid var(--border);
+      }
+      table { border-collapse: collapse; width: 100%; }
+      th, td { border: 1px solid var(--border); padding: 0.5rem 0.75rem; text-align: left; }
+      hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
+      .embed {
+        margin: 1rem 0;
+        aspect-ratio: 16 / 9;
+      }
+      .embed iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: block;
+      }
+      figure { margin: 1rem 0; }
+      figcaption { color: var(--muted); font-size: 0.9rem; margin-top: 0.35rem; }
+
+      @media (max-width: 1100px) {
+        .site-shell {
+          grid-template-columns: 1fr;
+          column-gap: 0;
+        }
+        .about-sidebar {
+          grid-column: 1;
+          justify-self: stretch;
+          width: auto;
+          max-width: var(--max);
+          margin: 0 auto;
+          position: static;
+          padding-top: 1rem;
+        }
+        .content-area { grid-column: 1; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="site-shell">
+      <AboutSidebar />
+      <div class="content-area">
+        <header>
+          <nav aria-label="Main">
+            {links.map((link) => (
+              <a href={link.href} aria-current={isActive(link.href) ? "page" : undefined}>
+                {link.label}
+              </a>
+            ))}
+          </nav>
+        </header>
+        <main>
+          <slot />
+        </main>
+        <footer>
+          <p>Edit Markdown files in <code>src/pages/</code> to update content. Folder structure maps to page URLs. Edit the left sidebar in <code>src/sidebar.md</code>.</p>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>
