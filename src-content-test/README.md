@@ -14,3 +14,14 @@ npm run build -- --test
 Layouts, components, and other non-Markdown code always come from `src/`.
 
 The `pages/broken-media.md` page deliberately references a missing file (`media/pfp.png`). Missing local images fall back to regular browser URLs, so the build still succeeds and the browser shows the alt text (`pfp`) instead.
+
+The `pages/rotate.md` page demonstrates the random picker:
+
+```md
+<rotate>
+- ![pfp](media/pfp1.jpg)
+- ![pfp](media/pfp2.jpg)
+- ![pfp](media/pfp3.jpg)
+```
+
+The `<rotate>` line is removed and one list item is randomly selected on each page load.

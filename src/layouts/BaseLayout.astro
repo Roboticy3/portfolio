@@ -8,7 +8,6 @@ interface Props {
 
 const { title = "My Site", description = "Personal site and notes" } = Astro.props;
 const pathname = Astro.url.pathname;
-const contentRoot = process.env.CONTENT_ROOT ?? "src";
 
 const links = [
   { href: "/", label: "Home" },
@@ -97,7 +96,7 @@ const isActive = (href: string) =>
         border: 1px solid var(--border);
       }
 
-      header, main, footer {
+      header, main {
         max-width: var(--max);
         margin: 0 auto;
       }
@@ -110,13 +109,6 @@ const isActive = (href: string) =>
       nav a { color: var(--link); text-decoration: none; font-weight: 500; }
       nav a[aria-current="page"] { color: var(--fg); text-decoration: underline; }
       main { padding-top: 1.5rem; padding-bottom: 3rem; }
-      footer {
-        padding-top: 1rem;
-        padding-bottom: 2rem;
-        border-top: 1px solid var(--border);
-        color: var(--muted);
-        font-size: 0.9rem;
-      }
 
       pre {
         padding: 1rem;
@@ -155,6 +147,10 @@ const isActive = (href: string) =>
       figure { margin: 1rem 0; }
       figcaption { color: var(--muted); font-size: 0.9rem; margin-top: 0.35rem; }
 
+      :global(.rotate-media) { margin: 1rem 0; }
+      :global(.rotate-option) { display: none; }
+      :global(.rotate-option.is-active) { display: block; }
+
       @media (max-width: 1100px) {
         .site-shell {
           grid-template-columns: 1fr;
@@ -172,6 +168,11 @@ const isActive = (href: string) =>
         .content-area { grid-column: 1; }
       }
     </style>
+    <noscript>
+      <style>
+        .rotate-option:first-child { display: block; }
+      </style>
+    </noscript>
   </head>
   <body>
     <div class="site-shell">
@@ -189,10 +190,36 @@ const isActive = (href: string) =>
         <main>
           <slot />
         </main>
-        <footer>
-          <p>Edit Markdown files in <code>{contentRoot}/pages/</code> to update content. Folder structure maps to page URLs. Edit the left sidebar in <code>{contentRoot}/sidebar.md</code>.</p>
-        </footer>
       </div>
     </div>
+    <script>
+      const randomIndex = (length) => {
+        if (globalThis.crypto?.getRandomValues) {
+          const value = new Uint32Array(1);
+          crypto.getRandomValues(value);
+          return value[0] % length;
+        }
+
+        return Math.floor(Math.random() * length);
+      };
+
+      const pickRotateMedia = () => {
+        document.querySelectorAll("[data-rotate]").forEach((container) => {
+          const options = Array.from(container.children).filter((element) =>
+            element.hasAttribute("data-rotate-option"),
+          );
+
+          if (options.length === 0) return;
+
+          options[randomIndex(options.length)].classList.add("is-active");
+        });
+      };
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", pickRotateMedia, { once: true });
+      } else {
+        pickRotateMedia();
+      }
+    </script>
   </body>
 </html>

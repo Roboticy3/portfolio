@@ -58,6 +58,19 @@ A simple, file-based website for blog-style entries and personal pages written i
 - The left sidebar is rendered from Markdown in `src/sidebar.md` and shown on every page. Edit it like any other content (text, links, images, etc.).
 - Use `src/pages/about.md` for longer-form personal content if desired.
 
+### Rotating media
+
+To pick a random embed on every page load, put a Markdown list directly under a `<rotate>` line:
+
+```md
+<rotate>
+- ![pfp](media/pfp1.jpg)
+- ![pfp](media/pfp2.jpg)
+- ![pfp](media/pfp3.jpg)
+```
+
+The `<rotate>` marker is removed and one list item is shown at random. Each option can be an image, a figure, or another embedded media element. Keep the list items on consecutive lines — a blank line ends the block.
+
 ### Embedding media
 
 - **Local files:** put images/media in `public/media/` and reference them by path (e.g. `/media/example.svg`).
