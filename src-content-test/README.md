@@ -1,0 +1,1 @@
+Retarget all markdown content loading from src to src-content-test and media to media-content-test to test files without having to interact with the content of the main page.
