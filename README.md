@@ -27,6 +27,8 @@ A simple, file-based website for blog-style entries and personal pages written i
 │  │     └─ notes/
 │  │        └─ second-note.md  # /blog/notes/second-note/
 │  └─ sidebar.md           # Markdown content for the left sidebar (shown on every page)
+├─ src-content-test/       # Sandboxed Markdown content used with `--test`
+├─ scripts/astro.mjs       # Launcher that handles the `--test` flag
 ├─ astro.config.mjs
 └─ package.json
 ```
@@ -83,6 +85,22 @@ npm run preview   # preview the production build locally
 ```
 
 The static site is output to `dist/`.
+
+## Testing with sandboxed content
+
+To load Markdown pages and the sidebar from `src-content-test/` instead of `src/`, pass the `--test` flag:
+
+```bash
+npm run dev -- --test
+npm run build -- --test
+```
+
+- Pages come from `src-content-test/pages/` instead of `src/pages/`.
+- The sidebar comes from `src-content-test/sidebar.md` instead of `src/sidebar.md`.
+- Layouts and components still come from `src/`, so only the Markdown content changes.
+- `--content-test` is accepted as an alias for `--test`.
+
+Without the flag, the site uses `src/` as usual.
 
 ## Deployment
 

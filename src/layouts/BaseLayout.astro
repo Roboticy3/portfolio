@@ -8,6 +8,7 @@ interface Props {
 
 const { title = "My Site", description = "Personal site and notes" } = Astro.props;
 const pathname = Astro.url.pathname;
+const contentRoot = process.env.CONTENT_ROOT ?? "src";
 
 const links = [
   { href: "/", label: "Home" },
@@ -189,7 +190,7 @@ const isActive = (href: string) =>
           <slot />
         </main>
         <footer>
-          <p>Edit Markdown files in <code>src/pages/</code> to update content. Folder structure maps to page URLs. Edit the left sidebar in <code>src/sidebar.md</code>.</p>
+          <p>Edit Markdown files in <code>{contentRoot}/pages/</code> to update content. Folder structure maps to page URLs. Edit the left sidebar in <code>{contentRoot}/sidebar.md</code>.</p>
         </footer>
       </div>
     </div>
