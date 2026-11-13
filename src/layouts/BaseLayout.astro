@@ -36,7 +36,6 @@ const isActive = (href: string) =>
         --link: #0969da;
         --code-bg: #f6f8fa;
         --max: 760px;
-        --sidebar: 240px;
       }
       @media (prefers-color-scheme: dark) {
         :root {
@@ -74,8 +73,7 @@ const isActive = (href: string) =>
       }
       .about-sidebar {
         grid-column: 1;
-        justify-self: end;
-        width: var(--sidebar);
+        justify-self: stretch;
         padding-top: 1.25rem;
         position: sticky;
         top: 0;
