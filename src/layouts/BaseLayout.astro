@@ -58,6 +58,11 @@ const isActive = (href: string) =>
       a { color: var(--link); }
       img, video, iframe, embed, object, svg, canvas { max-width: 100%; }
       img { height: auto; }
+      img.media-inline {
+        max-height: 1em;
+        width: auto;
+        vertical-align: middle;
+      }
 
       /* Main content stays centered; sidebar sits in the left margin/gutter. */
       .site-shell {
@@ -92,11 +97,13 @@ const isActive = (href: string) =>
         max-width: 100%;
       }
       .sidebar-content img {
-        width: 100%;
         height: auto;
+        border: 1px solid var(--border);
+      }
+      .sidebar-content img.media-block {
+        width: 100%;
         display: block;
         margin-bottom: 0.75rem;
-        border: 1px solid var(--border);
       }
 
       header, main {

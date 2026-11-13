@@ -1,6 +1,8 @@
 const styleMarkerPattern =
-  /^<style=(?:"([^"]*)"|'([^']*)'|“([^”]*)”|‘([^’]*)’)\s*>\s*/i;
+  /<style=(?:"([^"]*)"|'([^']*)'|“([^”]*)”|‘([^’]*)’)\s*>\s*/i;
 const mediaTagPattern = /<(img|video|iframe|embed|object|svg|audio)\b([^>]*)>/i;
+const sizePropertyPattern =
+  /(?:^|;)\s*(?:width|height|max-width|max-height|min-width|min-height)\s*:/i;
 
 const escapeAttribute = (value) =>
   value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
@@ -9,11 +11,28 @@ function mergeStyle(existing, style) {
   return existing ? `${existing}; ${style}` : style;
 }
 
+function addClass(node, className) {
+  node.data ??= {};
+  node.data.hProperties ??= {};
+
+  const existing = node.data.hProperties.className;
+  const classes = Array.isArray(existing) ? existing : existing ? [existing] : [];
+
+  if (!classes.includes(className)) {
+    node.data.hProperties.className = [...classes, className];
+  }
+}
+
 function applyStyle(node, style) {
   if (node.type === "image" || node.type === "imageReference") {
     node.data ??= {};
     node.data.hProperties ??= {};
     node.data.hProperties.style = mergeStyle(node.data.hProperties.style, style);
+
+    if (sizePropertyPattern.test(style)) {
+      addClass(node, "media-sized");
+    }
+
     return true;
   }
 
@@ -59,23 +78,28 @@ function transformChildren(node) {
     const child = children[index];
     if (child.type !== "text") continue;
 
-    const match = child.value.match(styleMarkerPattern);
-    if (!match) continue;
+    let value = child.value;
+    let match = value.match(styleMarkerPattern);
 
-    const style = (match[1] ?? match[2] ?? match[3] ?? match[4] ?? "").trim();
-    if (!style) continue;
+    while (match) {
+      const style = (match[1] ?? match[2] ?? match[3] ?? match[4] ?? "").trim();
+      value = value.slice(0, match.index) + value.slice(match.index + match[0].length);
 
-    let target = null;
-    for (let targetIndex = index + 1; targetIndex < children.length; targetIndex++) {
-      if (applyStyle(children[targetIndex], style)) {
-        target = children[targetIndex];
-        break;
+      if (style) {
+        let applied = false;
+        for (let targetIndex = index + 1; targetIndex < children.length; targetIndex++) {
+          if (applyStyle(children[targetIndex], style)) {
+            applied = true;
+            break;
+          }
+        }
+        if (!applied) break;
       }
+
+      match = value.match(styleMarkerPattern);
     }
 
-    if (!target) continue;
-
-    child.value = child.value.slice(match[0].length);
+    child.value = value;
     if (!child.value) {
       children.splice(index, 1);
       index -= 1;

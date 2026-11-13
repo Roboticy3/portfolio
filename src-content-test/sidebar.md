@@ -14,5 +14,7 @@ Your City
 **GitHub**  
 [github.com/yourname](https://github.com/yourname)
 
+Inline media stays inline: ![inline icon](/media-content-test/example.svg) within the sidebar text.
+
 ![Large sidebar image](/media-content-test/pexels-photo-31284696-1530186307.jpg)
 

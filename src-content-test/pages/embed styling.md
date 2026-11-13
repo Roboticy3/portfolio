@@ -23,3 +23,19 @@ description: "Media containment and inline style tests"
 ## Half-width iframe
 
 <style="width:50%;"><iframe width="1200" height="675" src="https://www.youtube.com/embed/jNQXAC9IVRw" title="Styled containment test" allowfullscreen></iframe>
+
+## Inline image
+
+An inline image ![inline svg](/media-content-test/example.svg) sits inside this sentence.
+
+## Inline styled image
+
+An inline image <style="width:1.5em; vertical-align:middle;">![inline svg](/media-content-test/example.svg) sits inside this sentence.
+
+## Inline iframe
+
+An inline iframe <iframe width="160" height="90" src="https://www.youtube.com/embed/jNQXAC9IVRw" title="Inline iframe"></iframe> sits inside this sentence.
+
+## Inline styled iframe
+
+An inline iframe <style="width:160px; height:90px; vertical-align:middle;"><iframe width="160" height="90" src="https://www.youtube.com/embed/jNQXAC9IVRw" title="Inline styled iframe"></iframe> sits inside this sentence.

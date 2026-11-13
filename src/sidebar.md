@@ -1,10 +1,9 @@
 <rotate>
  - ![pfp](media/pfp1.jpg)
- - ![pfp](media/pfp4.jpg)
  - ![pfp](media/pfp5.jpg)
  - ![pfp](media/pfp6.jpg)
  - ![pfp](media/pfp7.jpg)
- - ![pfp](media/pfp.jpg)
+ - ![pfp](media/pfp8.jpg)
 
 **Pablo Ibarz** - *Programmer unextrordinaire*
 
@@ -16,9 +15,9 @@ At this point I think I mostly just like the feeling of typing on a keyboard.
 
 **Education**
 
-![wam](media/wam) William & Mary - B.S. in Computer Science - 2022 to 2026.
+![wam](media/wam.jpg) William & Mary - B.S. in Computer Science - 2022 to 2026.
 
-Justice High School - IB Diploma - 2018 to 2022 ![justice](media/justice.png)
+Justice High School - IB Diploma - 2018 to 2022 ![jhs](media/jhs.png)
 
 ## Experience
 

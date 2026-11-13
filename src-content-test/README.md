@@ -33,3 +33,5 @@ The `pages/embed styling.md` page tests layout containment in the center column,
 ```
 
 The `<style>` marker is removed and applied to the next image or HTML media element on the same line.
+
+`pages/embed styling.md` also has inline examples. Images that share a paragraph with text auto-size to about the text height; adding a size to the `<style>` marker opts the image out of auto-sizing. Standalone images (alone in their own paragraph) keep their normal size.

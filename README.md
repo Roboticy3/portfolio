@@ -88,6 +88,20 @@ Media is automatically contained within the sidebar or center column. To customi
 
 The marker is removed and its CSS is applied to the embed element. Normal containment rules still apply, so an embed cannot grow wider than its container.
 
+Images placed inline with text (in the same paragraph) automatically shrink to about the text height, so they flow with the sentence:
+
+```md
+Here is an inline icon ![logo](/media/logo.svg) in a sentence.
+```
+
+If you set a size with the `<style>` marker, the image keeps that size instead:
+
+```md
+Here is a larger inline image <style="width:120px;">![chart](/media/chart.png) in a sentence.
+```
+
+Images that sit alone in their own paragraph are treated as standalone block media and keep their normal size.
+
 ## Local development
 
 Requirements: [Node.js](https://nodejs.org/) (v18+ recommended).
