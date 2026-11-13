@@ -10,13 +10,9 @@
 
 At this point I think I mostly just like the feeling of typing on a keyboard.
 
-[Wanna see a linkedin page with 0 posts? That's just how productive I am. Trust.](https://www.linkedin.com/in/pablo-ibarz-4129ba2a7/)
+[linkedin](https://www.linkedin.com/in/pablo-ibarz-4129ba2a7/)
 
-[insta](https://www.instagram.com/cristiano)
-
-[I have two (known) githubs.](www.github.com/Roboticy3)
-
-[This one's for my.. phone? It's kind of hard to explain. Anyway, here's all my code.](www.github.com/Roboticy2) 
+[gh 1](www.github.com/Roboticy3) - [gh 2](www.github.com/Roboticy2) 
 
 **Education**
 
