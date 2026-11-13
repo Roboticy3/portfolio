@@ -40,31 +40,31 @@ function hello(name) {
 | `src/pages/index.md` | `/` |
 | `src/pages/blog/my-first-post.md` | `/blog/my-first-post/` |
 
-## Embedding media
+## Embedding media-content-test
 
 ### Image example
 
-Images can be stored in `public/` and referenced by path. This example uses a generated SVG at `/media/example.svg`:
+Images can be stored in `public/` and referenced by path. This example uses a generated SVG at `/media-content-test/example.svg`:
 
 <figure>
-  <img src="/media/example.svg" alt="Example embedded SVG illustration" width="640" height="360" />
-  <figcaption>An embedded SVG image served from <code>public/media/example.svg</code>.</figcaption>
+  <img src="/media-content-test/example.svg" alt="Example embedded SVG illustration" width="640" height="360" />
+  <figcaption>An embedded SVG image served from <code>public/media-content-test/example.svg</code>.</figcaption>
 </figure>
 
 Markdown syntax for the same image:
 
-![Example embedded SVG illustration](/media/example.svg)
+![Example embedded SVG illustration](/media-content-test/example.svg)
 
 ### Video embed example
 
-HTML works inside Markdown, so you can embed media such as a YouTube video with an `<iframe>` (valid URL):
+HTML works inside Markdown, so you can embed media-content-test such as a YouTube video with an `<iframe>` (valid URL):
 
 <div class="embed">
   <iframe
     src="https://www.youtube.com/embed/jNQXAC9IVRw"
     title="Me at the zoo — first YouTube video"
     loading="lazy"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media-content-test; gyroscope; picture-in-picture; web-share"
     referrerpolicy="strict-origin-when-cross-origin"
     allowfullscreen
   ></iframe>

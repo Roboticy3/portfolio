@@ -16,7 +16,7 @@ To add a new page or blog entry, create a new Markdown (`.md`) file in the folde
 ## What you can do
 
 - Write content in [GitHub-style Markdown](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
-- Embed images and media (see the [example post](/blog/my-first-post/))
+- Embed images and media-content-test (see the [example post](/blog/my-first-post/))
 - Keep information visible site-wide in the left sidebar (edit `src/sidebar.md`), with longer details on the [About](/about/) page
 
 Get started by editing this file or adding a new post under `src/pages/blog/`.

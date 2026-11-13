@@ -15,15 +15,15 @@ Use this page for longer-form personal content that doesn't fit in the sidebar.
 - What you're writing about
 - Anything else you'd like visitors to know
 
-## Local media
+## Local media-content-test
 
-You can store images and other files in `public/media/` and embed them in any page:
+You can store images and other files in `public/media-content-test/` and embed them in any page:
 
 ```md
-![A description of the image](/media/example.svg)
+![A description of the image](/media-content-test/example.svg)
 ```
 
 <figure>
-  <img src="/media/example.svg" alt="Example local SVG image" width="640" height="360" />
-  <figcaption>Example local image from <code>public/media/example.svg</code>.</figcaption>
+  <img src="/media-content-test/example.svg" alt="Example local SVG image" width="640" height="360" />
+  <figcaption>Example local image from <code>public/media-content-test/example.svg</code>.</figcaption>
 </figure>

@@ -1,4 +1,4 @@
-![Profile illustration](/media/example.svg)
+![Profile illustration](/media-content-test/example.svg)
 
 **Your Name**  
 Writer & builder
@@ -13,3 +13,4 @@ Your City
 
 **GitHub**  
 [github.com/yourname](https://github.com/yourname)
+
