@@ -26,7 +26,7 @@ const isActive = (href: string) =>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
-    <style>
+    <style is:global>
       :root {
         color-scheme: light dark;
         --bg: #ffffff;
@@ -56,7 +56,7 @@ const isActive = (href: string) =>
         color: var(--fg);
       }
       a { color: var(--link); }
-      img, video, iframe { max-width: 100%; }
+      img, video, iframe, embed, object, svg, canvas { max-width: 100%; }
       img { height: auto; }
 
       /* Main content stays centered; sidebar sits in the left margin/gutter. */
@@ -88,6 +88,9 @@ const isActive = (href: string) =>
       .sidebar-content :first-child { margin-top: 0; }
       .sidebar-content :last-child { margin-bottom: 0; }
       .sidebar-content p { margin: 0 0 0.75rem; }
+      .sidebar-content :where(img, video, iframe, embed, object) {
+        max-width: 100%;
+      }
       .sidebar-content img {
         width: 100%;
         height: auto;
@@ -147,9 +150,9 @@ const isActive = (href: string) =>
       figure { margin: 1rem 0; }
       figcaption { color: var(--muted); font-size: 0.9rem; margin-top: 0.35rem; }
 
-      :global(.rotate-media) { margin: 1rem 0; }
-      :global(.rotate-option) { display: none; }
-      :global(.rotate-option.is-active) { display: block; }
+      .rotate-media { margin: 1rem 0; }
+      .rotate-option { display: none; }
+      .rotate-option.is-active { display: block; }
 
       @media (max-width: 1100px) {
         .site-shell {

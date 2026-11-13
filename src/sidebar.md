@@ -4,11 +4,11 @@
  - ![pfp](media/pfp5.jpg)
  - ![pfp](media/pfp6.jpg)
  - ![pfp](media/pfp7.jpg)
- - ![pfp](media/pfp8.jpg)
+ - ![pfp](media/pfp.jpg)
 
-**Pablo Ibarz**
+**Pablo Ibarz** - *Programmer unextrordinaire*
 
-*Programmer unextrordinaire*
+At this point I think I mostly just like the feeling of typing on a keyboard.
 
 [Wanna see a linkedin page with 0 posts? That's just how productive I am. Trust.](https://www.linkedin.com/in/pablo-ibarz-4129ba2a7/)
 

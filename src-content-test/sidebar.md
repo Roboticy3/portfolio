@@ -14,3 +14,5 @@ Your City
 **GitHub**  
 [github.com/yourname](https://github.com/yourname)
 
+![Large sidebar image](/media-content-test/pexels-photo-31284696-1530186307.jpg)
+

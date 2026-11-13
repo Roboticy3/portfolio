@@ -25,3 +25,11 @@ The `pages/rotate.md` page demonstrates the random picker:
 ```
 
 The `<rotate>` line is removed and one list item is randomly selected on each page load.
+
+The `pages/embed styling.md` page tests layout containment in the center column, and `sidebar.md` includes a large image to test sidebar containment. Individual embeds can be styled with:
+
+```md
+<style="width:50%;">![Half-width image](/media/example.jpg)
+```
+
+The `<style>` marker is removed and applied to the next image or HTML media element on the same line.

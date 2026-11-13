@@ -79,6 +79,15 @@ The `<rotate>` marker is removed and one list item is shown at random. Each opti
   ```
 - **HTML embeds:** standard HTML works inside Markdown, so you can include images, iframes, audio/video, etc. (see `src/pages/blog/my-first-post.md` for working image and YouTube embed examples). Avoid wrapping embeds in code fences unless you want to show the syntax.
 
+Media is automatically contained within the sidebar or center column. To customize a single embed, put a `<style>` marker before it on the same line:
+
+```md
+<style="width:50%;">![Half-width image](/media/example.jpg)
+<style="width:50%;"><iframe src="https://example.com/embed"></iframe>
+```
+
+The marker is removed and its CSS is applied to the embed element. Normal containment rules still apply, so an embed cannot grow wider than its container.
+
 ## Local development
 
 Requirements: [Node.js](https://nodejs.org/) (v18+ recommended).
