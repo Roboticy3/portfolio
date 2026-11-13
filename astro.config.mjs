@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import { fileURLToPath } from "node:url";
+import remarkFallbackImages from "./scripts/remark-fallback-images.mjs";
 
 // The launcher in scripts/astro.mjs sets this to "src-content-test" when the
 // `--test` flag is passed, so pages and the sidebar are loaded from test
@@ -21,5 +22,6 @@ export default defineConfig({
   // Markdown pages use this layout by default when `layout` is not set in frontmatter.
   markdown: {
     // GitHub-flavored Markdown is enabled by default in Astro.
+    remarkPlugins: [remarkFallbackImages],
   },
 });

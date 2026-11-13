@@ -100,6 +100,10 @@ npm run build -- --test
 - Layouts and components still come from `src/`, so only the Markdown content changes.
 - `--content-test` is accepted as an alias for `--test`.
 
+The sandbox includes `/broken-media/`, which uses `![pfp](media/pfp.png)` to test missing-media handling.
+
+Missing local images are rendered as regular root-relative URLs instead of build-time imports. That means the build succeeds and the browser displays the image's alt text when the media 404s — for example, `![pfp](media/pfp.png)` displays `pfp`.
+
 Without the flag, the site uses `src/` as usual.
 
 ## Deployment

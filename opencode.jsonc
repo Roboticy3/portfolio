@@ -6,5 +6,7 @@
     {"action": "*", "resource": "src/*.md", "effect": "deny"},
     {"action": "*", "resource": "*..*", "effect": "deny"},
 
+    {"action": "npm *", "resource": "*", "effect": "deny"},
+    {"action": "npm run dev -- --test", "resource": "*", "effect": "allow"},
   ]
 }
