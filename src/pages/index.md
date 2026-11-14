@@ -44,4 +44,12 @@ Like most vibecoded projects, it seems to work pretty well.
 Alongside this, I am doing a no-AI project with lexers and asts, so my hope is
 to come back to remark when that project is done and learn how it works.
 
+As for the exact degree of AI use. You can rest easy knowing AI was not even
+permitted to touch the content of this page. Using a custom build flag, the website switches to running in "--test" mode
+when an agent is working on it, which hosts a completely different set of
+"test content" for the purposes of abusing the custom markdown format. Using
+opencode2's new-ish permissions system, the agent can't even read the actual
+page content or media. Much less edit it. All content of the page was produced
+by myself.
+
 All text and code on this website is CC-NC-BY-4.0 and all games and other stuff is CC-NC-ND-BY-4.0. Assets can be found at https://github.com/Roboticy3/portfolio . Of course, I reserve the right to move things out to a private database for either logistical or privacy reasons.
