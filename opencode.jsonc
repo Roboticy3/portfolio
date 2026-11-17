@@ -6,7 +6,11 @@
     {"action": "*", "resource": "src/*.md", "effect": "deny"},
     {"action": "*", "resource": "*..*", "effect": "deny"},
 
-    {"action": "npm *", "resource": "*", "effect": "deny"},
-    {"action": "npm run dev -- --test", "resource": "*", "effect": "allow"},
+    //patch fix for #9
+    {"action": "glob", "resource": "**/*.md", "effect": "deny"},
+    {"action": "shell", "resource": "grep *", "effect": "deny"},
+
+    {"action": "shell", "resource": "npm *", "effect": "deny"},
+    {"action": "shell", "resource": "npm run dev -- --test", "effect": "allow"},
   ]
 }

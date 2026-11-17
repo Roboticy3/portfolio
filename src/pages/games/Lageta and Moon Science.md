@@ -6,7 +6,7 @@ date: "2026-11-17"
 ---
 Lageta and Moon Science were long term undergraduate research projects I did developing games. By all conventional measures, they are not very good research projects or software projects. But, for solo undergraduate projects, they were fairly technically impressive, and shaped me into the type of developer I am today. This essay serves as a reflection on the projects together, starting with Lageta and ending with Moon Science.
 
-If you frankly couldn't care less about me or who I am, this essay more generally is about puzzle game design and the differences between research and software development. And I swear these are more interesting than they sounds.
+If you frankly couldn't care less about me or who I am, this essay more generally is about puzzle game design and loops and loop detection. If you played either of these games and are curious about how they were made, the following should also satisfy that curiosity.
 # Part 1. Lageta
 
 ## Initial Interest In Research
@@ -64,6 +64,7 @@ The user can supply wires with values. When this happens, if a gate has this wir
 | High, Low, High, Low  | Low, High, Low, High |
 | High, Low, High, High | High, High, Low, Low |
 | ...                   | ...                  |
+
 Say you wired two Reverse gates together in sequence, so that the first output of the first gate was wired to the first input of the second gate. Second output to second input. Third output to third input. And fourth output to fourth input.
 
 Then, the player supplies the first gate with the values High, Low, High, Low.
@@ -78,6 +79,7 @@ Note that if we allowed multiple wires to be supplied to the same input, it coul
 | ----- | ------ |
 | High  | Low    |
 | Low   | High   |
+
 Say I could connect two wires to the input, then supply one with High and one with Low. What value should the Not gate output?
 
 The real answer is that the two wires, since they are connected to the same pin, may become "Illegal", "High Impedence", or "Floating", depending on who you ask. Those are just some of the many possible states in real life not sufficiently described by High or Low. In response to the exotic value, the Not gate.. Does.. Something?
@@ -165,7 +167,7 @@ Lageta had a weakness where a lot of strain was placed on the player's eyes to k
 Digital logic circuits, on paper, translate fairly well to *synthesizer* circuits, a similar class of computer hardware intended for generating audio rather than being a full computer. Maybe I could make a game where the audio is simulated instead of some abstract notion of voltage.
 
 Again, do you see the mistakes here? First, let's talk about the good.
- - It's Spring 2026. I'm older and marginally wiser at 21 years old.
+ - It's Spring 2026. I'm older and very marginally wiser at 21 years old.
  - I'm not larping as a researcher. A senior art project fits the bill much better for what I'm trying to achieve.
  - The senior project also provides a strict deadline. Technically, I started working on this project in Fall 2025, but the deadline did give me motivation to wrap things up and be reasonable about features.
 Now we're squarely in the realm of software development, and you software developers should be quaking in your boots at some of the details.
@@ -213,7 +215,7 @@ Intuitively, I believed this would have the effect of "mixing" the two signals t
 
 Firstly, the audio samples from 0 to 255 actually represent numbers from -128 to 127. These are positive and negative "pressure" values. You need negative and positive pressure to produce a wave. If you try to only use positive values, oscillating away and back towards zero, the oscillations will actually create negative pressure on their own when the positive values decrease towards zero, making your attempt at total positivity moot. To represent pressure more accurately, Audio signals are usually assumed to be "centered" at zero, ranging between a positive and negative value. 
 
-Secondly, adding two audio streams together makes it louder. A lot louder. Measuring loudness can be done with a statistical method called the [RMSE](https://en.wikipedia.org/wiki/Root_mean_square_deviation) and a logarithmic transform. You can then divide by loudness to ger a "normalized" signal. Suddenly adding two signals just got a whole lot more complicated. 
+Secondly, adding two audio streams together makes it louder. A lot louder. Measuring loudness can be done with a statistical method called the [RMSE](https://en.wikipedia.org/wiki/Root_mean_square_deviation) and a logarithmic transform. You can then divide by loudness to get a "normalized" signal. Suddenly adding two signals just got a whole lot more complicated. 
 
 I ended up restructuring the entire simulator around working with *floating point* samples, which is a story for another day, but basically floating point is another representation of numbers that's more forgiving for dynamic audio processing tasks and supports automatic normalization in some contexts. 
 
@@ -225,16 +227,7 @@ It also runs like crap, and has a ton of bugs.
 
 But I'm greatful I could put a wrap on the project before it crossed the one year mark. And, like Lageta, it was received well by testers, making it better than my high school projects. 
 # Part 3. Conclusion
-## Commonalities between Software Development and Research
-Both software development and research, done right, require a diligent work ethic, patience and conceptual rigor. Some schools of software engineering are less intense about the conceptual stuff, which is fine. We all deserve a break sometimes. But the truth is most progress won't happen when you're code-monkeying away at a terminal. Unless you hold the entirety of a program in your head, from start to finish, there are intermediary steps of documentation, planning, testing and so on that really do make it look a bit like research.
 
-Both good research and good software can be characterized by the positive effects they bring to their communities. Useful tools, frameworks, etc.
-
-Research in many fields comes with its own coding-adjacent labors as well. Adjusting instruments, designing experiments, a lot of research these days just straight up is a lot of code.
-## Differences between Software Development and Research
-The goal of software development is to develop software. Software should exist and do stuff. Research can be into something at best metaphysical or at worst mathematical. Things that won't be relevent for hundreds of years, if ever. That's part of what makes research amazing. A strong researcher understands that they do what they do in the persuit of knowledge, more free from conflicts of interest like profit or.. just wanting to code a lot like some certain sickos I know.
-
-I would say research is different in that papers are the final product, not software, but I reject this notion. The point of the paper is to keep you in check. It's a certificate of marginal progress made towards lifelong goals of understanding. Overall, I conclude that there are more similarities than differences between these two disciplines.
 ## More on Loops and Loop Detection
 After college, I continued to have catastrophic project after catastrophic project. Maybe I'm catastrophizing, but I have a knack for getting into tech trouble in this way. 
 
