@@ -1,0 +1,51 @@
+---
+import { getSectionEntries } from "../utils/section-entries";
+
+interface Props {
+  pathname: string;
+}
+
+const { pathname } = Astro.props;
+const entries = await getSectionEntries(pathname);
+---
+
+{entries && entries.length > 0 && (
+  <section class="section-entries" aria-labelledby="section-entries-title">
+    <h2 id="section-entries-title">Entries</h2>
+    <ul>
+      {entries.map((entry) => (
+        <li>
+          <a href={entry.href}>{entry.title}</a>
+          {entry.date && (
+            <span class="section-entry-date">
+              {" — "}<time datetime={entry.date}>{entry.date}</time>
+            </span>
+          )}
+          {entry.description && <p>{entry.description}</p>}
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+  .section-entries {
+    margin-top: 2rem;
+  }
+  .section-entries ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .section-entries li {
+    margin: 0 0 0.75rem;
+  }
+  .section-entries li p {
+    margin: 0.15rem 0 0;
+    color: var(--muted);
+  }
+  .section-entry-date {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+</style>

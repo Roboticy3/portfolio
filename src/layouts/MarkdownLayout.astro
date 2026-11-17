@@ -1,9 +1,11 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
+import SectionEntries from "../components/SectionEntries.astro";
 
 const { frontmatter } = Astro.props;
 const title = frontmatter?.title ?? "Untitled";
 const description = frontmatter?.description;
+const showEntries = frontmatter?.entries !== false;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -12,4 +14,5 @@ const description = frontmatter?.description;
   <article>
     <slot />
   </article>
+  {showEntries && <SectionEntries pathname={Astro.url.pathname} />}
 </BaseLayout>
