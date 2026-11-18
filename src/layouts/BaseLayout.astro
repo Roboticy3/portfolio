@@ -62,6 +62,33 @@ const isActive = (href: string) =>
         vertical-align: middle;
       }
 
+      /* A paragraph of only images: each image takes a share of the line based
+         on its aspect ratio, so every image ends up the same height. */
+      p.media-row {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: flex-start;
+      }
+      p.media-row > .media-row-item {
+        flex-grow: var(--media-grow, 1);
+        flex-shrink: 1;
+        flex-basis: 0;
+        min-width: 0;
+      }
+      p.media-row > img.media-row-item {
+        display: block;
+        width: 0;
+        height: auto;
+      }
+      p.media-row > a.media-row-item {
+        display: block;
+      }
+      p.media-row > a.media-row-item img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
       /* Main content stays centered; sidebar sits in the left margin/gutter. */
       .site-shell {
         display: grid;
@@ -74,7 +101,7 @@ const isActive = (href: string) =>
         grid-column: 1;
         justify-self: stretch;
         padding-top: 1.25rem;
-        position: sticky;
+        /*position: sticky;*/
         top: 0;
       }
       .content-area {
@@ -222,10 +249,49 @@ const isActive = (href: string) =>
         });
       };
 
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", pickRotateMedia, { once: true });
-      } else {
+      const imageFor = (item) =>
+        item.matches("img") ? item : item.querySelector("img");
+
+      const sizeMediaRows = () => {
+        document.querySelectorAll("p.media-row").forEach((row) => {
+          const items = Array.from(row.children).filter((item) =>
+            item.classList.contains("media-row-item"),
+          );
+          if (items.length === 0) return;
+
+          const update = () => {
+            const ratios = items.map((item) => {
+              const image = imageFor(item);
+              if (!image?.naturalWidth || !image.naturalHeight) return null;
+              return image.naturalWidth / image.naturalHeight;
+            });
+
+            // Wait until every image in the row has loaded before dividing up
+            // the width, otherwise the proportions would be based on a
+            // partially loaded row.
+            if (ratios.some((ratio) => ratio === null)) return;
+
+            items.forEach((item, index) => {
+              item.style.setProperty("--media-grow", String(ratios[index]));
+            });
+          };
+
+          for (const item of items) {
+            imageFor(item)?.addEventListener("load", update);
+          }
+          update();
+        });
+      };
+
+      const setupMedia = () => {
         pickRotateMedia();
+        sizeMediaRows();
+      };
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", setupMedia, { once: true });
+      } else {
+        setupMedia();
       }
     </script>
   </body>

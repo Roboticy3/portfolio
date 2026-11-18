@@ -32,9 +32,9 @@ more generalized RigidBody, which offers fewer safeguards against things like
 exploding velocity and angular velocity vectors, sudden acceleration and clipping.
 
 I was *always* working on RoachGame. If you saw me on campus, or in class, in freshman or sophomore year, you probably were looking at a man making a game about bugs. And I wasn't making much headway. I've already written about
-[loops](../Lageta and Moon Science) and how I get stuck writing and testing code over and over. It's probably a mental disorder.
+[loops](/games/Lageta and Moon Science/) and how I get stuck writing and testing code over and over. It's probably a mental disorder.
 
-(photoshop guy at computer thinking about bugs)
+<style="width: 50%; left: 25%; position: relative;">![image of nerd thinking about bugs](media/nerdroach.png)
 
 In these dynamic systems, there is also another particular kind of loop that's
 easy to get stuck in. In the dynamic system loop, you adjust the parameters of
@@ -109,7 +109,7 @@ the phyisical world, how impenetrable the project really was with me guarding th
 front door. I exhausted myself to do this, too, staying up late many nights in a
 row to make it happen. 
 
-(insert vegeta)
+![its over 9000! idk. idk how to be funny](media/vegeta.jpg)
 
 Second, at the peak of our man power, the full team was pushing for a demo release
 with for a game jam circa 2023. Suddenly, my computer was the only computer that
@@ -134,7 +134,7 @@ finish the demo content to the planned degree by the jam deadline.
 
 Finally, my relationship with the texture and level artist in particular deteriorated, largely because of how I was assigning tasks. It took a long time for her to have something to show for her work. She had familiarity with hammer, but not Blender. While we explored trenchboom, the tooling to integrate Godot with trenchboom was still nascent and finnicky (not anymore, though. [Check it out!](https://github.com/func-godot)). On top of that, because I was being vague about what I wanted, it was hard to make measurable progress. When she finally did present a result, I was unhappy with it, and asked for revisions. From the expression on her face, it was clear I was not getting revisions.
 
-(insert maye's textures)
+![aluminum](media/aluminum.png) ![metal_beta](media/metal_beta.png) ![sewage](media/sewage.png)
 
 In retrospect, the textures are pretty good.
 
@@ -151,6 +151,8 @@ Hopefully, it would be therapeutic to get the basic mechanics of RoachGame worki
 as a simple walking simulator (with full wall climbing), and Valve-style developer
 commentary nodes.
 
+![roachgame developer commentary screenshot](media/roach.png)
+
 Overall, this was a very positive experience. While it was a lot of work to throw
 the demo together, there's no way to get around the fact that game development is
 hard. And it felt like an application of all the tricks I had learned about subviewports, dynamic UIs,
@@ -162,6 +164,9 @@ feel satisfied completing it, despite it not being as well recieved as my more
 arcade-y games uploaded to itch. This project is done.
 
 # Part 4. Was it really so bad?
+
+![kafka.webp](media/kafka.webp)
+
 I really wanted to link to some of my team members' later works, but as far as
 I can tell none of them are very "online" people. Which is fine, you're allowed
 to not be online. If they don't have super public websites or profiles, I'm not

@@ -50,7 +50,8 @@ A "gate" is a function. It has some "input" slots for wires to point into, and s
 
 Wires are precisely an input slot of one gate paired with an output slot of another. Wires also remember the last charge or "value" passed through them. The assumption is that the last value passed through the wire is being supplied to that wire continuously. Again, not necessarily true, but this shortcut actually appears in both the naive and realistic approach, so it's definitely good enough for 2023 me's purposes.
 
-(screenshot from the game with labels)
+![lageta screenshot](media/lageta.png)
+
 (Red, Blue, and Black wires represent the three states in the game, High, Low, or Neither).
 
 The user can supply wires with values. When this happens, if a gate has this wire as an input, that gate is "called" as a function. The return values of this function are then supplied to the output wires. One can also think of each gate as having a list of combinations of inputs matched to combinations of outputs, when a wire on one of its inputs is given a new value, it reads the held value of *all* of its inputs and finds the corresponding combination of outputs.
@@ -98,7 +99,7 @@ Immediately after, the Not gate supplies the wire with High because its input ha
 
 Immediately after that, the Not gate supplies the wire with Low again because its input has changed its value to High.
 
-This continues forever. Programmers will recognize the incoming stack overflow error after the 1024th stack frame, and are already approaching my location with weapons and lectures on iteration over recursion.
+This continues forever. Programmers will recognize the incoming stack overflow error after the 1024th stack frame, and are already approaching my location with lectures on iteration over recursion, and possibly weapons.
 
 Computer Science students should also recognize the similarity of this digital logic simulation to Djikstra's algorithm (recursive implementation). The goal of finding a target is replaced with the goal of "delivering" a voltage to the end of the circuit.
 
@@ -120,17 +121,19 @@ I spent a good deal of time on one feature that ultimately did not make much imp
 
 Dr. Sun advised against this repeatedly, and he was right. Not because it wasn't an interesting idea, but because I was already so swamped with work just getting *something* functional out the door that adding this consideration on top would burn me out. Not to mention risk confusing players.
 
-Where most digital logic games fail, for me, is a lack of novelty. Take a good puzzle game, for example. Like the generational puzzle game [Portal](https://store.steampowered.com/app/400/Portal/). Digital logic games are all ultimately puzzle games. What can they learn from Portal? 
+Where most digital logic games fail, for me, is a lack of novelty. Take a good puzzle game, for example. Like the generational puzzle game [Portal 2](https://store.steampowered.com/app/620/Portal_2/). Digital logic games are all ultimately puzzle games. What can they learn from Portal 2? 
 
-Well, Portal balances learning new things about portals with learning about new things in Portal: light bridges, turrets, gels. These mechanics are not necessary to provide a full game about portals. Portals are sufficiently deep of a mechanic, pretty much on their own, to make an interesting game in full. But the extra stuff breaks up the monotony of doing level after level of *just* portals. It also serves as additional context for the world. Deadly turrets, mysterious light, and clinical gel fit the uncaring environment very well, and this is thanks to years of experimentation by the game's developers to find what exactly works for that game specifically. Those extra mechanics are what some people call "novelty" in a game design context.
+Well, Portal 2 balances learning new things about portals with learning about new things *in* Portal 2: light bridges, turrets, gels. These mechanics are not necessary to provide a full game about portals. Portals are sufficiently deep of a mechanic, pretty much on their own, to make an interesting game in full. But the extra stuff breaks up the monotony of doing level after level of *just* portals. It also serves as additional context for the world. Deadly turrets, mysterious light, and clinical gel fit the uncaring environment very well, and this is thanks to years of experimentation by the game's developers to find what exactly works for that game specifically. Those extra mechanics are what some people call "novelty" in a game design context.
 
-(images of Portal)
+![light](media/portal3.jpg) ![gel](media/portal4.jpg)
 
-Digital logic games are, as far as I know, just the gates and wires. 
+![turret](media/portal5.jpg)
+
+Most example of digital logic games are, as far as I know, just the gates and wires. They don't provide these extra mechanics because they want to focus on the reasonably complex central idea of building circuits.
 
 While my level select circuit idea was also just gates and wires, it would have forced the user to think outside of the box to unlock certain levels, and see circuits from a different angle. Not just a thing that goes in a level, but also a thing that might exist elsewhere, too.
 
-Dr. Sun did support another mechanic which, if completed, would have provided novelty by more direct means: a suite of tools gradually unlocked for beating certain levels. In hindsight, this was the right move. More time spent on tools would have made the game stand out a decent bit. We had some interesting ideas aside from the basic voltmeter, like a tool that performs De Morgan transformations automatically after they are taught to the user.
+Dr. Sun did support the idea of another mechanic which, if completed, would have provided novelty by more direct means: a suite of tools gradually unlocked for beating certain levels. In hindsight, this was the right move. More time spent on tools would have made the game stand out a decent bit. We had some interesting ideas aside from the basic voltmeter, like a tool that performs De Morgan transformations automatically after they are taught to the user.
 
 Part of good software development is being able to handle novelty or "additional features", in more enterprise terms, without losing track of the core product. Novelty is important, but balancing the development of the level select screen with other important features would have made the final result feel more polished.
 ## What's your Research Question? 
@@ -245,9 +248,15 @@ Use novelty! Have weird shit it your game! Have little critters that come by at 
 
 Tangentially, being educational is no excuse to not have a soul. I recently played a demo for a GPU Architecture game called [IT THINKS!](https://store.steampowered.com/app/5196330/IT_THINKS_Build_Your_Own_GPU/), which promises it will, on full release, provide a full learning pipeline from basic gates to GPU. Right now, the game looks like AI slop. And it really pains me to say that, because that doesn't mean there wasn't a lot of effort put into the game. After all, AI making software development easy is mostly an illusion pushed forward by people who have never actually "made" anything that couldn't have just been a couple github clones and a shell script. No, the experience I've played so far is surprisingly polished for a demo. I also really do believe in this game's mission and respect what the developers are doing. But..
 
-(image)
+![itthinks](media/itthinks.jpg)
 
-Come on, guys. This is the most "Claude, make me a Zachtonics game" image I've ever seen. The bubbles, the gradients! And none of those buttons have sound, from what I could tell. There's no narrative context around your company in the game (that was a big strength of Shenzhen IO). Best of luck to all you in the agentic trenches.
+Come on, guys. This is the most "Claude, make me a Zachtonics game" image I've ever seen. The bubbles, the grids.. And none of those buttons have sound, from what I could tell. There's no narrative context around your company in the game (that was a big strength of Shenzhen IO). Best of luck to all you in the agentic trenches.
 
-Finally, don't forget that digital logic *in computing* is a subset of a larger, abstract theory of circuitry. You can go up to Boolean Algebras, up to Algebras, and down to Quantum Systems to make a game about quantum computing circuits like [Quantum Oddysey](https://www.quarksinteractive.com/quantum-odyssey). If you can devise a set of states, gates, and rules for wiring thats more intuitive than how it works in real life, use that. Real life is complicated and weird. In math, we study whole numbers even though the real world is rarely so round. And when we get to high school, we're ready for functions on Real numbers, the decimals. Teaching people digital logic is not the same as throwing a bunch of gates in their face and asking them to solve puzzles. Tutoring has shown me the power of starting from a simpler problem and working up. And the process of finding intuitive abstractions of these difficult concepts for newcomers to the field is research worthy work indeed.
+Finally, don't forget that digital logic *in computing* is a subset of a larger, abstract theory of circuitry. You can go up to Boolean Algebras, up to Algebras, and down to Quantum Systems to make a game about quantum computing circuits like [Quantum Oddysey](https://www.quarksinteractive.com/quantum-odyssey). However, that game seems to only make things more difficult. If you can devise a set of states, gates, and rules for wiring thats more intuitive than how it works in real life, use that. Real life is complicated and weird. In math, we study whole numbers even though the real world is rarely so round. And when we get to high school, we're ready for functions on Real numbers, the decimals. Teaching people digital logic is not the same as throwing a bunch of gates in their face and asking them to solve puzzles. Tutoring has shown me the power of starting from a simpler problem and working up. And the process of finding intuitive abstractions of these difficult concepts for newcomers to the field is research worthy work indeed.
+
+Screenshot of Quantum Odyssey: 
+
+![quantum odyssey](media/quantumodyssey.jpg)
+
+
 

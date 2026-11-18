@@ -2,11 +2,9 @@ const isWhitespaceText = (node) => node.type === "text" && node.value.trim() ===
 
 const isMediaNode = (node) => node.type === "image" || node.type === "imageReference";
 
-const soleMediaChild = (paragraph) => {
-  const children = (paragraph.children ?? []).filter((child) => !isWhitespaceText(child));
-  if (children.length !== 1) return null;
-
-  const [child] = children;
+// A child counts as media when it is an image on its own, or a link that wraps
+// exactly one image. Returns the image node, or null.
+const mediaIn = (child) => {
   if (isMediaNode(child)) return child;
 
   if (child.type === "link") {
@@ -17,6 +15,28 @@ const soleMediaChild = (paragraph) => {
   }
 
   return null;
+};
+
+const contentChildren = (paragraph) =>
+  (paragraph.children ?? []).filter((child) => !isWhitespaceText(child));
+
+const soleMediaChild = (paragraph) => {
+  const children = contentChildren(paragraph);
+  if (children.length !== 1) return null;
+  return mediaIn(children[0]);
+};
+
+// Two or more images alone in a paragraph form a row. The images share the
+// line's width in proportion to their aspect ratios, giving them all the same
+// height.
+const mediaRowChildren = (paragraph) => {
+  const children = contentChildren(paragraph);
+  if (children.length < 2) return null;
+
+  const media = children.map(mediaIn);
+  if (media.some((node) => !node)) return null;
+
+  return children.map((child, index) => ({ child, media: media[index] }));
 };
 
 const addClass = (node, className) => {
@@ -57,6 +77,18 @@ function transformChildren(node) {
 
     if (media) {
       addClass(media, "media-block");
+      return;
+    }
+
+    const row = mediaRowChildren(node);
+    if (row) {
+      addClass(node, "media-row");
+      for (const { child, media: image } of row) {
+        // An explicit <style> width opts the image out of automatic sizing.
+        if (!hasClass(image, "media-sized")) {
+          addClass(child, "media-row-item");
+        }
+      }
       return;
     }
 

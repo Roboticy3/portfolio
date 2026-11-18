@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 640" role="img" aria-labelledby="title desc">
+  <title id="title">Tall embedded image</title>
+  <desc id="desc">A tall gradient placeholder used to test image rows.</desc>
+  <defs>
+    <linearGradient id="bg" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+  </defs>
+  <rect width="360" height="640" rx="24" fill="url(#bg)" />
+  <circle cx="180" cy="180" r="80" fill="#ffffff" fill-opacity="0.25" />
+  <text x="180" y="580" text-anchor="middle" font-family="system-ui, sans-serif" font-size="28" fill="#ffffff">Tall image</text>
+</svg>
