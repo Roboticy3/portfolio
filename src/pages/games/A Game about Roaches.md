@@ -32,7 +32,7 @@ more generalized RigidBody, which offers fewer safeguards against things like
 exploding velocity and angular velocity vectors, sudden acceleration and clipping.
 
 I was *always* working on RoachGame. If you saw me on campus, or in class, in freshman or sophomore year, you probably were looking at a man making a game about bugs. And I wasn't making much headway. I've already written about
-[loops](../Lageta and Moon Science.md) and how I get stuck writing and testing code over and over. It's probably a mental disorder.
+[loops](Lageta%20and%20Moon%20Science.md) and how I get stuck writing and testing code over and over. It's probably a mental disorder.
 
 <style="width: 50%; left: 25%; position: relative;">![image of nerd thinking about bugs](media/nerdroach.png)
 
