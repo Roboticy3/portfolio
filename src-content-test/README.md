@@ -37,3 +37,5 @@ The `<style>` marker is removed and applied to the next image or HTML media elem
 `pages/embed styling.md` also has inline examples. Images that share a paragraph with text auto-size to about the text height; adding a size to the `<style>` marker opts the image out of auto-sizing. Standalone images (alone in their own paragraph) keep their normal size.
 
 The `pages/media rows.md` page tests multiple images on one line. With no other text, the images fill the line in proportion to their aspect ratios, so they all have the same height. That page includes equal images, a tall/wide pair, linked images, and a row with one explicitly sized image.
+
+`pages/local links.md` and `pages/games/notes/link probe.md` test internal links. Absolute and relative links to Markdown files (with or without the `.md` extension), links to generated URLs, anchors, and file names with spaces all resolve to the correct page. The sandbox sidebar also has a relative link, which should resolve identically on every page.
