@@ -3,6 +3,10 @@
 // changes. Run with `npm run repro:game-menu`, or set BASE_URL to use an
 // already running dev/preview server.
 //
+// Now that the bug is fixed, pass `--expect-fixed` (or run
+// `npm run test:game-menu`) to invert the assertion and use this as a
+// regression check.
+//
 // The controls are clicked through the DOM (element.click()) rather than with
 // Playwright's pointer actions because several of the game's buttons animate
 // or sit partly outside their container.
@@ -10,6 +14,7 @@
 import { spawn } from "node:child_process";
 import { chromium } from "playwright";
 
+const expectFixed = process.argv.includes("--expect-fixed");
 const port = Number(process.env.PORT ?? 4399);
 const baseUrl = process.env.BASE_URL ?? `http://localhost:${port}`;
 let server = null;
@@ -103,7 +108,7 @@ try {
     text: document.body.innerText,
   }));
 
-  const urlChanged = result.url.includes("/campaign/");
+  const urlChanged = result.url.includes("/campaign");
   const stillMainMenu = result.text.includes("Continue") && result.text.includes("Tutorials");
   const levelSelectRendered = result.text.includes("Some Kind of Combo");
 
@@ -112,11 +117,14 @@ try {
   console.log("Still rendering main menu:", stillMainMenu);
   console.log("Level select rendered:", levelSelectRendered);
 
-  if (urlChanged && stillMainMenu && !levelSelectRendered) {
+  if (levelSelectRendered && !stillMainMenu) {
+    console.log("\nBUG FIXED: Continue renders the level select screen.");
+    process.exitCode = expectFixed ? 0 : 1;
+  } else if (urlChanged && stillMainMenu && !levelSelectRendered) {
     console.log("\nBUG REPRODUCED: Continue changes the URL but the main menu stays on screen.");
-    process.exitCode = 0;
+    process.exitCode = expectFixed ? 1 : 0;
   } else {
-    console.log("\nBug did not reproduce. Game state may have changed.");
+    console.log("\nUnexpected state. Game state may have changed.");
     process.exitCode = 1;
   }
 } finally {

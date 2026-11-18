@@ -146,11 +146,21 @@ export function rewriteText(content, game) {
   return rewriteAnchorHrefs(rewriteNavigation(content, game), game);
 }
 
+// SvelteKit prerendered HTML infers its base from `location`. That is wrong
+// once the game is mounted below the site root, especially for folder URLs
+// such as /campaign/. Prefer the mount path passed into the iframe instead,
+// while keeping the original expression as a fallback for direct visits.
+const SVELTEKIT_BASE = /(base\s*:\s*)(new URL\(\s*(["'])\.\.?\3\s*,\s*location\s*\)\.pathname\.slice\(\s*0\s*,\s*-1\s*\))/g;
+
+export function overrideSvelteKitBase(html) {
+  return html.replace(SVELTEKIT_BASE, (_full, prefix, original) => `${prefix}window.__gameMountBase ?? ${original}`);
+}
+
 // Runs before the game's module scripts. It only prefixes root-absolute URLs;
 // relative URLs and external URLs keep their normal meaning.
 export function mountRuntime(game) {
   const fallback = JSON.stringify(game.route);
-  return `<script>(()=>{const marker="game-mount:";const fromName=typeof window.name==="string"&&window.name.startsWith(marker)?window.name.slice(marker.length):"";const fromQuery=new URLSearchParams(location.search).get("__game_base");const base=fromName||fromQuery||${fallback};if(!fromName&&base)window.name=marker+base;const underBase=(value)=>value===base||value.startsWith(base+"/");const withBaseParam=(target)=>{const url=new URL(target,location.href);if(!url.searchParams.has("__game_base"))url.searchParams.set("__game_base",base);return url.pathname+url.search+url.hash};const path=(value)=>{const text=String(value);const target=underBase(text)?text:text.startsWith("/")?base+text:base+"/"+text;return withBaseParam(target)};const external=(text)=>/^[a-z][a-z\\d+.-]*:/i.test(text)||text.startsWith("//");const absolute=(value)=>{const text=String(value);if(external(text)||!text.startsWith("/")||underBase(text))return text;return withBaseParam(base+text)};Object.defineProperty(window,"__gameMountPathname",{configurable:true,get:()=>location.pathname,set:(value)=>{location.href=path(value)}});Object.defineProperty(window,"__gameMountHref",{configurable:true,get:()=>location.href,set:(value)=>{location.href=absolute(value)}});window.__gameMountAssign=(value)=>location.assign(absolute(value));window.__gameMountReplace=(value)=>location.replace(absolute(value));const NativeAudio=window.Audio;if(NativeAudio){const MountedAudio=function(source){return new NativeAudio(typeof source==="string"?absolute(source):source)};MountedAudio.prototype=NativeAudio.prototype;window.Audio=MountedAudio}})();</script>`;
+  return `<script>(()=>{const marker="game-mount:";const fromName=typeof window.name==="string"&&window.name.startsWith(marker)?window.name.slice(marker.length):"";const fromQuery=new URLSearchParams(location.search).get("__game_base");const base=fromName||fromQuery||${fallback};window.__gameMountBase=base;if(!fromName&&base)window.name=marker+base;const underBase=(value)=>value===base||value.startsWith(base+"/");const withBaseParam=(target)=>{const url=new URL(target,location.href);if(!url.searchParams.has("__game_base"))url.searchParams.set("__game_base",base);return url.pathname+url.search+url.hash};const path=(value)=>{const text=String(value);const target=underBase(text)?text:text.startsWith("/")?base+text:base+"/"+text;return withBaseParam(target)};const external=(text)=>/^[a-z][a-z\\d+.-]*:/i.test(text)||text.startsWith("//");const absolute=(value)=>{const text=String(value);if(external(text)||!text.startsWith("/")||underBase(text))return text;return withBaseParam(base+text)};Object.defineProperty(window,"__gameMountPathname",{configurable:true,get:()=>location.pathname,set:(value)=>{location.href=path(value)}});Object.defineProperty(window,"__gameMountHref",{configurable:true,get:()=>location.href,set:(value)=>{location.href=absolute(value)}});window.__gameMountAssign=(value)=>location.assign(absolute(value));window.__gameMountReplace=(value)=>location.replace(absolute(value));const NativeAudio=window.Audio;if(NativeAudio){const MountedAudio=function(source){return new NativeAudio(typeof source==="string"?absolute(source):source)};MountedAudio.prototype=NativeAudio.prototype;window.Audio=MountedAudio}})();</script>`;
 }
 
 export function injectMountRuntime(html, game) {
@@ -175,7 +185,7 @@ export function injectBase(html, game, relativeFile = "") {
 }
 
 function prepareHtml(content, game, relativeFile = "", cleanUrl = false) {
-  let html = rewriteText(content, game);
+  let html = overrideSvelteKitBase(rewriteText(content, game));
   if (cleanUrl) html = injectBase(html, game, relativeFile);
   return injectMountRuntime(html, game);
 }

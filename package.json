@@ -7,7 +7,8 @@
     "start": "node scripts/astro.mjs dev",
     "build": "node scripts/astro.mjs build",
     "preview": "node scripts/astro.mjs preview",
-    "repro:game-menu": "node scripts/reproduce-game-menu-bug.mjs"
+    "repro:game-menu": "node scripts/reproduce-game-menu-bug.mjs",
+    "test:game-menu": "node scripts/reproduce-game-menu-bug.mjs --expect-fixed"
   },
   "dependencies": {
     "astro": "^5.7.0",

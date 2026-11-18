@@ -88,7 +88,7 @@ Put a magic word on its own line to mount a static site from `public/games/` ins
 
 Astro already handles the route in every mode: `npm run dev` serves `public/` directly, `npm run build` copies it into `dist/`, and `npm run preview` serves those copied files from the same path. No separate server or route file is needed — just drop a game's build folder in `public/games/<name>/build/`.
 
-Subroutes stay inside the mount. Navigation calls (`location.pathname`, `location.href`, `assign`, `replace`) and absolute links in the game are redirected to the mounted route; root-absolute media such as `/hover.wav` is remapped too. The mount path is passed to the iframe through its `name`, so the rewritten script does not depend on the embedded page's own URL. Each subroute's `.html` file is also reachable at its clean URL (`.../build/tutorial/Tutorial`). This happens on the fly in dev and in the copied files during build.
+Subroutes stay inside the mount. Navigation calls (`location.pathname`, `location.href`, `assign`, `replace`) and absolute links in the game are redirected to the mounted route; root-absolute media such as `/hover.wav` is remapped too. The mount path is passed to the iframe through its `name`, so the rewritten script does not depend on the embedded page's own URL. SvelteKit games also get their inline `base` set from that path, so folder routes such as `/campaign/` render the correct page. Each subroute's `.html` file is also reachable at its clean URL (`.../build/tutorial/Tutorial`). This happens on the fly in dev and in the copied files during build.
 
 ### Embedding media
 
