@@ -1,11 +1,13 @@
-// Turns a magic word such as {{embed:/games/Lageta/build/}} into an iframe.
-// Astro serves `public/` at the site root in dev and copies it into `dist/`
-// during build, so a static game's build folder is already available on the
-// same route in dev, build, and preview. The embed only needs that URL.
+// Embeds a local static game from an ordinary Markdown image whose URL points
+// at a game's build folder, for example:
+//
+//   ![The game Lageta](/games/Lageta/build)
+//
+// The image node becomes an iframe in the generated HTML. The game files in
+// public/ are never edited.
 
-const MAGIC_PATTERN = /^\{\{\s*(embed|game)\s*:?\s*([^{}]+?)\s*\}\}$/i;
 const externalPattern = /^[a-z][a-z\d+.-]*:/i;
-const htmlFilePattern = /\.html?$/i;
+const indexFilePattern = /\/index\.html?$/i;
 
 const escapeHtml = (value) =>
   value
@@ -14,93 +16,89 @@ const escapeHtml = (value) =>
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 
+const decodeSafely = (value) => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
+
 const isWhitespace = (node) => node.type === "text" && node.value.trim() === "";
 
-// Accepts a route such as `games/Lageta/build`, `/games/Lageta/build/`, or a
-// game folder name with the `game:` shorthand. Always ends folder routes with
-// a slash so relative asset URLs inside the embedded site resolve correctly.
-function normalizeRoute(raw, kind) {
-  const value = raw
-    .trim()
-    .replace(/^["'`]|["'`]$/g, "")
-    .replace(/\\/g, "/");
+function splitUrl(url) {
+  const match = url.match(/^([^?#]*)([\s\S]*)$/);
+  return { pathname: match[1], suffix: match[2] ?? "" };
+}
 
-  if (!value || externalPattern.test(value) || value.startsWith("//")) return null;
+// Returns the game whose build folder contains this image URL. The decoded
+// path is only used for matching; the iframe keeps the author's URL.
+function gameForUrl(url, games) {
+  if (typeof url !== "string" || !url || externalPattern.test(url) || url.startsWith("//")) return null;
 
-  const parts = value.match(/^([^?#]*)([\s\S]*)$/);
-  const pathname = parts[1];
-  const suffix = parts[2] ?? "";
-  const segments = pathname.split("/").filter(Boolean);
+  const { pathname, suffix } = splitUrl(url.replace(/\\/g, "/"));
+  if (!pathname) return null;
 
-  if (segments.length === 0 || segments.some((segment) => segment === "." || segment === "..")) {
-    return null;
+  const decoded = decodeSafely(pathname).replace(/\/+$/, "") || "/";
+  const withoutIndex = decoded.replace(indexFilePattern, "");
+
+  for (const game of games) {
+    const roots = [game.route, game.pathname].map((root) => root.replace(/\/+$/, ""));
+    const matched = roots.some((root) => withoutIndex === root || withoutIndex.startsWith(`${root}/`));
+    if (!matched) continue;
+
+    let sourcePath = pathname.replace(/\/+$/, "");
+    sourcePath = sourcePath.replace(indexFilePattern, "");
+    if (withoutIndex === roots[0] || withoutIndex === roots[1] || !sourcePath) sourcePath += "/";
+
+    return { game, src: `${sourcePath}${suffix}` };
   }
 
-  if (kind === "game" && segments.length === 1) {
-    segments.unshift("games");
-    segments.push("build");
-  }
-
-  const trailingSlash = htmlFilePattern.test(segments.at(-1)) ? "" : "/";
-  return `/${segments.map(encodeURIComponent).join("/")}${trailingSlash}${suffix}`;
+  return null;
 }
 
-function titleFor(route, kind, raw) {
-  if (kind === "game" && !raw.includes("/")) return raw.trim();
+function embedHtml(image, match) {
+  const title = image.alt?.trim() || match.game.name;
+  const mount = match.game.route.replace(/\/+$/, "");
+  const style = image.data?.hProperties?.style;
+  const styleAttribute = typeof style === "string" && style.trim() ? ` style="${escapeHtml(style)}"` : "";
 
-  const pathname = route.split(/[?#]/, 1)[0];
-  const segments = pathname.split("/").filter(Boolean);
-  const buildIndex = segments.indexOf("build");
-  const candidate = buildIndex > 0 ? segments[buildIndex - 1] : segments.at(-1);
-
-  try {
-    return decodeURIComponent(candidate);
-  } catch {
-    return candidate;
-  }
+  return `<div class="embed"${styleAttribute}><iframe src="${escapeHtml(match.src)}" name="game-mount:${escapeHtml(mount)}" title="${escapeHtml(title)}" loading="lazy" allowfullscreen></iframe></div>`;
 }
 
-function embedHtml(raw, kind) {
-  const src = normalizeRoute(raw, kind);
-  if (!src) return null;
+// Only a paragraph containing nothing but the game image is replaced, so
+// ordinary images and inline prose are left alone. The `<style>` marker has
+// already stripped its text and put the CSS on the image node by this point.
+function gameEmbedFor(node, games) {
+  if (node.type !== "paragraph") return null;
 
-  const title = titleFor(src, kind, raw);
-  const mount = src.split(/[?#]/, 1)[0].replace(/\/+$/, "");
-  const frameName = `game-mount:${mount}`;
-  return `<div class="embed"><iframe src="${escapeHtml(src)}" name="${escapeHtml(frameName)}" title="${escapeHtml(title)}" loading="lazy" allowfullscreen></iframe></div>`;
+  const children = (node.children ?? []).filter((child) => !isWhitespace(child));
+  if (children.length !== 1 || children[0].type !== "image") return null;
+
+  const match = gameForUrl(children[0].url, games);
+  return match ? { type: "html", value: embedHtml(children[0], match) } : null;
 }
 
-// Only a paragraph that contains nothing but the magic word is replaced, so
-// ordinary prose is never swallowed and the iframe stays block-level markup.
-function replacementFor(paragraph) {
-  if (paragraph.type !== "paragraph") return null;
-
-  const children = (paragraph.children ?? []).filter((child) => !isWhitespace(child));
-  if (children.length !== 1 || children[0].type !== "text") return null;
-
-  const text = children[0].value.trim();
-  const match = text.match(MAGIC_PATTERN);
-  if (!match) return null;
-
-  const html = embedHtml(match[2], match[1].toLowerCase());
-  return html ? [{ type: "html", value: html }] : null;
-}
-
-function transformChildren(node) {
-  if (!Array.isArray(node.children)) return;
-
-  const children = [];
-  for (const child of node.children) {
-    transformChildren(child);
-    const replacement = replacementFor(child);
-    if (replacement) children.push(...replacement);
-    else children.push(child);
-  }
-  node.children = children;
-}
-
-export default function remarkLocalEmbed() {
+export default function remarkLocalEmbed(options = {}) {
+  const games = options.games ?? [];
   return (tree) => {
-    transformChildren(tree);
+    const walk = (node) => {
+      if (!Array.isArray(node.children)) return;
+
+      const children = [];
+      for (const child of node.children) {
+        const replacement = gameEmbedFor(child, games);
+        if (replacement) {
+          children.push(replacement);
+          continue;
+        }
+
+        walk(child);
+        children.push(child);
+      }
+      node.children = children;
+    };
+
+    walk(tree);
   };
 }

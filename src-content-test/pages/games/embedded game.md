@@ -4,14 +4,14 @@ title: "Embedded Game"
 description: "Loading a local static game inside a Markdown page"
 ---
 
-A magic word on its own line embeds a static site that lives under `public/`:
+An image whose URL points at a local game's `build/` folder embeds it in an iframe:
 
-{{embed:/games/Lageta/build/}}
+![The game Lageta](/games/Lageta/build)
 
-The `game:` shorthand assumes the usual `games/<name>/build` route:
+The `<style>` marker works on game embeds too, and is applied to the iframe wrapper:
 
-{{game:Lageta}}
+<style="min-height: 800px;, width: 100%;">![The game Lageta, tall](/games/Lageta/build)
 
-Both render an iframe pointing at the same hidden route, so the embedded site works in dev, build, and preview.
+Both render an iframe pointing at the static site under `/games/Lageta/build/`, so the embedded site works in dev, build, and preview.
 
 Menu clicks, links, sounds, and direct subroute URLs stay under `/games/Lageta/build/`, so the tutorial, level, options, and tooling pages load inside the iframe too.

@@ -8,6 +8,7 @@ import remarkLocalLinks from "./scripts/remark-local-links.mjs";
 import remarkLocalEmbed from "./scripts/remark-local-embed.mjs";
 import viteGameRoutes from "./scripts/vite-game-routes.mjs";
 import gamesIntegration from "./scripts/astro-games-integration.mjs";
+import { discoverGames } from "./scripts/game-mounts.mjs";
 
 // The launcher in scripts/astro.mjs sets this to "src-content-test" when the
 // `--test` flag is passed, so pages and the sidebar are loaded from test
@@ -34,10 +35,10 @@ export default defineConfig({
   markdown: {
     // GitHub-flavored Markdown is enabled by default in Astro.
     remarkPlugins: [
-      remarkLocalEmbed,
       remarkRotateMedia,
-      [remarkLocalLinks, { pagesDir }],
       remarkEmbedStyles,
+      [remarkLocalEmbed, { games: discoverGames(publicDir) }],
+      [remarkLocalLinks, { pagesDir }],
       remarkBlockMedia,
       remarkFallbackImages,
     ],

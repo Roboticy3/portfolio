@@ -78,13 +78,19 @@ The `<rotate>` marker is removed and one list item is shown at random. Each opti
 
 ### Embedding local games
 
-Put a magic word on its own line to mount a static site from `public/games/` inside the page:
+Use an ordinary Markdown image whose URL points at a game's `build/` folder:
 
 ```md
-{{embed:/games/Lageta/build/}}
+![The game Lageta](/games/Lageta/build)
 ```
 
-`{{game:Lageta}}` is shorthand for the same `games/<name>/build` route. The word becomes an iframe pointing at the hidden route. Folder routes get a trailing slash automatically so relative asset URLs inside the embedded site resolve correctly.
+The alt text becomes the iframe title. Folder routes get a trailing slash automatically so relative asset URLs inside the embedded site resolve correctly.
+
+The normal `<style>` marker works on game embeds too. It is applied to the iframe wrapper:
+
+```md
+<style="min-height: 800px;">![The game Lageta](/games/Lageta/build)
+```
 
 Astro already handles the route in every mode: `npm run dev` serves `public/` directly, `npm run build` copies it into `dist/`, and `npm run preview` serves those copied files from the same path. No separate server or route file is needed — just drop a game's build folder in `public/games/<name>/build/`.
 

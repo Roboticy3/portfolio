@@ -4,6 +4,9 @@ title: "Lageta and Moon Science"
 description: "Writup for Lageta and Moon Science"
 date: "2026-11-17"
 ---
+
+<style="min-height:512px; width:100%;">![Lageta embed](/games/Lageta/build)
+
 Lageta and Moon Science were long term undergraduate research projects I did developing games. By all conventional measures, they are not very good research projects or software projects. But, for solo undergraduate projects, they were fairly technically impressive, and shaped me into the type of developer I am today. This essay serves as a reflection on the projects together, starting with Lageta and ending with Moon Science.
 
 If you frankly couldn't care less about me or who I am, this essay more generally is about puzzle game design and loops and loop detection. If you played either of these games and are curious about how they were made, the following should also satisfy that curiosity.

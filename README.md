@@ -26,12 +26,20 @@ These all resolve to `/about/`. Anchors and query strings are preserved, and spa
 
 ## Embedding local games
 
-Put a magic word on its own line to embed a static site from `public/` in an iframe:
+Use an ordinary Markdown image whose URL points at a game's `build/` folder:
 
 ```md
-{{embed:/games/Lageta/build/}}
+![The game Lageta](/games/Lageta/build)
 ```
 
-`{{game:Lageta}}` is shorthand for the same route. Folder routes get a trailing slash automatically so relative asset URLs inside the embedded site keep working. The route is served by Astro itself: `npm run dev` reads it from `public/`, `npm run build` copies it into `dist/`, and `npm run preview` serves it from there. No separate server or extra route file is needed.
+The alt text becomes the iframe title. Folder routes get a trailing slash automatically so relative asset URLs inside the embedded site keep working.
+
+The normal `<style>` marker works here too:
+
+```md
+<style="min-height: 800px;">![The game Lageta](/games/Lageta/build)
+```
+
+The route is served by Astro itself: `npm run dev` reads it from `public/`, `npm run build` copies it into `dist/`, and `npm run preview` serves it from there. No separate server or extra route file is needed.
 
 Subroutes stay inside the mount: navigation calls and absolute links in the game are redirected to the mounted route, root-absolute media is remapped, and subroute `.html` files are also served at clean URLs. The mount path is passed to the iframe through its `name`, so the game does not have to infer it from its own URL. SvelteKit games also get their inline `base` set from that path, so folder routes such as `/campaign/` render the correct page. This works in dev, build, and preview. External URLs and links to static files in `public/` are left alone apart from being made root-absolute where needed.

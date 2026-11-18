@@ -40,4 +40,4 @@ The `pages/media rows.md` page tests multiple images on one line. With no other 
 
 `pages/local links.md` and `pages/games/notes/link probe.md` test internal links. Absolute and relative links to Markdown files (with or without the `.md` extension), links to generated URLs, anchors, and file names with spaces all resolve to the correct page. The sandbox sidebar also has a relative link, which should resolve identically on every page.
 
-`pages/games/embedded game.md` tests local site embeds. The `{{embed:/games/Lageta/build/}}` and `{{game:Lageta}}` magic words become iframes pointing at the static site under `public/games/Lageta/build/`.
+`pages/games/embedded game.md` tests local site embeds. An ordinary Markdown image pointing at `/games/Lageta/build/` becomes an iframe for the static site under `public/games/Lageta/build/`. It also checks that the `<style>` marker sizes the iframe wrapper.
