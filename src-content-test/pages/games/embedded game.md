@@ -14,4 +14,4 @@ The `game:` shorthand assumes the usual `games/<name>/build` route:
 
 Both render an iframe pointing at the same hidden route, so the embedded site works in dev, build, and preview.
 
-Links inside the game (such as its tutorial or level pages) are rewritten to stay under `/games/Lageta/build/`, so subroutes load inside the iframe too.
+Menu clicks, links, sounds, and direct subroute URLs stay under `/games/Lageta/build/`, so the tutorial, level, options, and tooling pages load inside the iframe too.

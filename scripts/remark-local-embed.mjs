@@ -65,7 +65,9 @@ function embedHtml(raw, kind) {
   if (!src) return null;
 
   const title = titleFor(src, kind, raw);
-  return `<div class="embed"><iframe src="${escapeHtml(src)}" title="${escapeHtml(title)}" loading="lazy" allowfullscreen></iframe></div>`;
+  const mount = src.split(/[?#]/, 1)[0].replace(/\/+$/, "");
+  const frameName = `game-mount:${mount}`;
+  return `<div class="embed"><iframe src="${escapeHtml(src)}" name="${escapeHtml(frameName)}" title="${escapeHtml(title)}" loading="lazy" allowfullscreen></iframe></div>`;
 }
 
 // Only a paragraph that contains nothing but the magic word is replaced, so

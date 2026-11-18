@@ -84,58 +84,88 @@ export function discoverGames(publicDir) {
 
 export function gameMeta(game) {
   game.meta ??= (() => {
-    const routes = new Map();
-    const prefixes = new Set();
+    const routes = new Set();
 
     for (const file of walk(game.buildDir)) {
       if (!/\.html$/i.test(file)) continue;
 
       const relative = toPosix(path.relative(game.buildDir, file));
       if (relative.toLowerCase() === "index.html") continue;
-
-      const route = relative.replace(/\.html$/i, "");
-      routes.set(route, relative);
-
-      const segments = route.split("/");
-      if (segments.length > 1) prefixes.add(`${segments.slice(0, -1).join("/")}/`);
+      routes.add(relative.replace(/\.html$/i, ""));
     }
 
-    return {
-      routes: [...routes.keys()].sort((a, b) => b.length - a.length),
-      prefixes: [...prefixes].sort((a, b) => b.length - a.length),
-    };
+    return { routes: [...routes].sort((a, b) => b.length - a.length) };
   })();
 
   return game.meta;
 }
 
-function replaceQuoted(content, token, replacement) {
-  for (const quote of ['"', "'", "`"]) {
-    content = content.split(`${quote}${token}${quote}`).join(`${quote}${replacement}${quote}`);
+function decodePath(value) {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
   }
-  return content;
 }
 
-// Static builds commonly hardcode root-absolute routes such as "/tutorial/"
-// or "/campaign". Inside an iframe those would navigate to the parent site,
-// so point them back at the mounted copy of the game.
+// Convert a game-relative route such as "/tutorial/Tutorial" into the mounted
+// route. Only routes that correspond to a prerendered file are rewritten;
+// SvelteKit's client-side route table is left alone so its own base handling
+// still works.
+function mountedRoute(game, rawPath) {
+  const pathname = decodePath(rawPath).split(/[?#]/)[0];
+  const relative = pathname.replace(/^\/+|\/+$/g, "");
+  if (!relative) return `${game.route}/`;
+
+  const { routes } = gameMeta(game);
+  const match = routes.find((route) => route === relative || route === `${relative}/index`);
+  return match ? `${game.route}/${match}` : null;
+}
+
+const LOCATION_TARGET = String.raw`(?<![\w.])(?:(?:window|document)\.)?location`;
+
+// Static builds sometimes use `location.pathname = "tutorial/X"` or
+// `location.href = "/campaign"`. Those assignments resolve against the origin
+// root, so redirect them through helpers that know the game's mount route.
+function rewriteNavigation(content, game) {
+  return content
+    .replace(new RegExp(`${LOCATION_TARGET}\\.pathname\\s*=`, "g"), "window.__gameMountPathname=")
+    .replace(new RegExp(`${LOCATION_TARGET}\\.href\\s*=`, "g"), "window.__gameMountHref=")
+    .replace(new RegExp(`${LOCATION_TARGET}\\.assign\\s*\\(`, "g"), "window.__gameMountAssign(")
+    .replace(new RegExp(`${LOCATION_TARGET}\\.replace\\s*\\(`, "g"), "window.__gameMountReplace(");
+}
+
+function rewriteAnchorHrefs(content, game) {
+  return content.replace(/(\bhref\s*=\s*)(["'])\/([^"']*)\2/gi, (full, prefix, quote, raw) => {
+    const target = mountedRoute(game, `/${raw}`);
+    return target ? `${prefix}${quote}${target}${quote}` : full;
+  });
+}
+
 export function rewriteText(content, game) {
-  const { routes, prefixes } = gameMeta(game);
-  const base = game.route;
-
-  for (const route of routes) {
-    content = replaceQuoted(content, `/${route}`, `${base}/${route}.html`);
-  }
-  for (const prefix of prefixes) {
-    content = replaceQuoted(content, `/${prefix}`, `${base}/${prefix}`);
-  }
-
-  return content;
+  return rewriteAnchorHrefs(rewriteNavigation(content, game), game);
 }
 
-// Subroute files are served at clean URLs, so relative asset URLs need a base
-// pointing back at the root of the mounted game.
+// Runs before the game's module scripts. It only prefixes root-absolute URLs;
+// relative URLs and external URLs keep their normal meaning.
+export function mountRuntime(game) {
+  const fallback = JSON.stringify(game.route);
+  return `<script>(()=>{const marker="game-mount:";const fromName=typeof window.name==="string"&&window.name.startsWith(marker)?window.name.slice(marker.length):"";const fromQuery=new URLSearchParams(location.search).get("__game_base");const base=fromName||fromQuery||${fallback};if(!fromName&&base)window.name=marker+base;const underBase=(value)=>value===base||value.startsWith(base+"/");const withBaseParam=(target)=>{const url=new URL(target,location.href);if(!url.searchParams.has("__game_base"))url.searchParams.set("__game_base",base);return url.pathname+url.search+url.hash};const path=(value)=>{const text=String(value);const target=underBase(text)?text:text.startsWith("/")?base+text:base+"/"+text;return withBaseParam(target)};const external=(text)=>/^[a-z][a-z\\d+.-]*:/i.test(text)||text.startsWith("//");const absolute=(value)=>{const text=String(value);if(external(text)||!text.startsWith("/")||underBase(text))return text;return withBaseParam(base+text)};Object.defineProperty(window,"__gameMountPathname",{configurable:true,get:()=>location.pathname,set:(value)=>{location.href=path(value)}});Object.defineProperty(window,"__gameMountHref",{configurable:true,get:()=>location.href,set:(value)=>{location.href=absolute(value)}});window.__gameMountAssign=(value)=>location.assign(absolute(value));window.__gameMountReplace=(value)=>location.replace(absolute(value));const NativeAudio=window.Audio;if(NativeAudio){const MountedAudio=function(source){return new NativeAudio(typeof source==="string"?absolute(source):source)};MountedAudio.prototype=NativeAudio.prototype;window.Audio=MountedAudio}})();</script>`;
+}
+
+export function injectMountRuntime(html, game) {
+  if (html.includes("__gameMountPathname")) return html;
+  const script = mountRuntime(game);
+  return /<head\b[^>]*>/i.test(html)
+    ? html.replace(/(<head\b[^>]*>)/i, `$1\n\t${script}`)
+    : `${script}\n${html}`;
+}
+
+// Clean subroute URLs need a base pointing at the source file's directory so
+// relative asset URLs such as ../_app/... still resolve.
 export function injectBase(html, game, relativeFile = "") {
+  if (/<base\b/i.test(html)) return html;
+
   const directory = path.posix.dirname(toPosix(relativeFile));
   const base = directory === "." ? `${game.route}/` : `${game.route}/${directory}/`;
   const tag = `<base href="${base}">`;
@@ -144,10 +174,15 @@ export function injectBase(html, game, relativeFile = "") {
     : `${tag}\n${html}`;
 }
 
+function prepareHtml(content, game, relativeFile = "", cleanUrl = false) {
+  let html = rewriteText(content, game);
+  if (cleanUrl) html = injectBase(html, game, relativeFile);
+  return injectMountRuntime(html, game);
+}
+
 export function gameFileForPathname(game, pathname) {
   const decoded = decodeURIComponent(pathname);
   const relative = decoded.slice(game.pathname.length).replace(/^\/+|\/+$/g, "");
-  const meta = gameMeta(game);
   const seen = new Set();
 
   const candidates = [
@@ -167,14 +202,12 @@ export function gameFileForPathname(game, pathname) {
 
     const ext = path.extname(file).toLowerCase();
     const isHtml = ext === ".html";
-    let content = fs.readFileSync(file);
-
-    if (TEXT_EXTENSIONS.has(ext)) {
-      content = Buffer.from(rewriteText(content.toString("utf8"), game), "utf8");
-      if (isHtml && candidate !== relative) {
-        content = Buffer.from(injectBase(content.toString("utf8"), game, candidate), "utf8");
-      }
-    }
+    const source = fs.readFileSync(file);
+    const content = isHtml
+      ? Buffer.from(prepareHtml(source.toString("utf8"), game, candidate, candidate !== relative), "utf8")
+      : TEXT_EXTENSIONS.has(ext)
+        ? Buffer.from(rewriteText(source.toString("utf8"), game), "utf8")
+        : source;
 
     return { content, ext, isHtml };
   }
@@ -183,7 +216,7 @@ export function gameFileForPathname(game, pathname) {
 }
 
 // Rewrites the copied build in dist/ and adds clean-URL HTML files for every
-// subroute, so the same links work on a plain static host under preview too.
+// subroute, so navigation works on a plain static host under preview too.
 export function writeMountedGame(game, outDir) {
   const meta = gameMeta(game);
 
@@ -191,23 +224,23 @@ export function writeMountedGame(game, outDir) {
     const relative = toPosix(path.relative(game.buildDir, file));
     const ext = path.extname(file).toLowerCase();
     const source = fs.readFileSync(file);
-    const content = TEXT_EXTENSIONS.has(ext)
-      ? Buffer.from(rewriteText(source.toString("utf8"), game), "utf8")
-      : source;
+    const isHtml = ext === ".html";
+    const content = isHtml
+      ? Buffer.from(prepareHtml(source.toString("utf8"), game, relative), "utf8")
+      : TEXT_EXTENSIONS.has(ext)
+        ? Buffer.from(rewriteText(source.toString("utf8"), game), "utf8")
+        : source;
 
     const target = path.join(outDir, relative);
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.writeFileSync(target, content);
 
-    if (ext !== ".html" || relative.toLowerCase() === "index.html") continue;
+    if (!isHtml || relative.toLowerCase() === "index.html") continue;
 
     const route = relative.replace(/\.html$/i, "");
     const cleanTarget = path.join(outDir, route, "index.html");
     fs.mkdirSync(path.dirname(cleanTarget), { recursive: true });
-    fs.writeFileSync(
-      cleanTarget,
-      injectBase(rewriteText(source.toString("utf8"), game), game, relative),
-    );
+    fs.writeFileSync(cleanTarget, Buffer.from(prepareHtml(source.toString("utf8"), game, relative, true), "utf8"));
   }
 
   return meta;

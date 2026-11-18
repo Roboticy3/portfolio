@@ -10,6 +10,8 @@
     {"action": "glob", "resource": "**/*.md", "effect": "deny"},
     {"action": "shell", "resource": "grep *", "effect": "deny"},
 
+    {"action": "edit", "resource": "public/games/*", "effect": "deny"},
+
     {"action": "shell", "resource": "npm *", "effect": "deny"},
     {"action": "shell", "resource": "npm run dev -- --test", "effect": "allow"},
   ],
