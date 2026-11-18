@@ -1,17 +1,15 @@
-import fs from "node:fs";
-import path from "node:path";
-
-const insideDir = (dir, target) => {
-  const relative = path.relative(dir, target);
-  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
-};
+import {
+  CONTENT_TYPES,
+  TEXT_EXTENSIONS,
+  discoverGames,
+  gameFileForPathname,
+} from "./game-mounts.mjs";
 
 // Vite's dev static middleware serves files from `public/` but does not fall
-// back to index.html for a folder URL. Astro's built output does, so this
-// plugin keeps the clean game route working in dev as well.
+// back to index.html for a folder URL, and it cannot rewrite absolute routes
+// baked into a game's compiled JavaScript. This middleware handles both so the
+// embedded site behaves the same as it does after build/preview.
 export default function viteGameRoutes(publicDir) {
-  const root = path.resolve(publicDir);
-
   return {
     name: "local-game-routes",
     configureServer(server) {
@@ -25,22 +23,20 @@ export default function viteGameRoutes(publicDir) {
           return next();
         }
 
-        if (!pathname.startsWith("/games/")) return next();
+        const game = discoverGames(publicDir).find((candidate) =>
+          pathname.startsWith(`${candidate.pathname}/`),
+        );
+        if (!game) return next();
 
-        const segments = pathname.split("/").filter(Boolean);
-        if (segments.length === 0 || /\.[a-z\d]+$/i.test(segments.at(-1))) return next();
+        const result = gameFileForPathname(game, pathname);
+        if (!result) return next();
 
-        const indexFile = path.resolve(root, `.${pathname}`, "index.html");
-        if (
-          !insideDir(root, indexFile) ||
-          !fs.existsSync(indexFile) ||
-          !fs.statSync(indexFile).isFile()
-        ) {
-          return next();
-        }
+        // Binary assets are unchanged; let Vite stream them with its own
+        // caching and range handling.
+        if (!TEXT_EXTENSIONS.has(result.ext)) return next();
 
-        res.setHeader("Content-Type", "text/html; charset=utf-8");
-        res.end(fs.readFileSync(indexFile));
+        res.setHeader("Content-Type", CONTENT_TYPES[result.ext] ?? "application/octet-stream");
+        res.end(result.content);
       });
     },
   };

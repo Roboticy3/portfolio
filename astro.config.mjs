@@ -7,6 +7,7 @@ import remarkBlockMedia from "./scripts/remark-block-media.mjs";
 import remarkLocalLinks from "./scripts/remark-local-links.mjs";
 import remarkLocalEmbed from "./scripts/remark-local-embed.mjs";
 import viteGameRoutes from "./scripts/vite-game-routes.mjs";
+import gamesIntegration from "./scripts/astro-games-integration.mjs";
 
 // The launcher in scripts/astro.mjs sets this to "src-content-test" when the
 // `--test` flag is passed, so pages and the sidebar are loaded from test
@@ -19,6 +20,7 @@ const publicDir = fileURLToPath(new URL("./public", import.meta.url));
 
 export default defineConfig({
   srcDir: contentRoot,
+  integrations: [gamesIntegration(publicDir)],
   vite: {
     resolve: {
       alias: {
