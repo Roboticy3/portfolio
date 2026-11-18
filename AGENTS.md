@@ -76,6 +76,18 @@ To pick a random embed on every page load, put a Markdown list directly under a 
 
 The `<rotate>` marker is removed and one list item is shown at random. Each option can be an image, a figure, or another embedded media element. Keep the list items on consecutive lines — a blank line ends the block.
 
+### Embedding local games
+
+Put a magic word on its own line to mount a static site from `public/games/` inside the page:
+
+```md
+{{embed:/games/Lageta/build/}}
+```
+
+`{{game:Lageta}}` is shorthand for the same `games/<name>/build` route. The word becomes an iframe pointing at the hidden route. Folder routes get a trailing slash automatically so relative asset URLs inside the embedded site resolve correctly.
+
+Astro already handles the route in every mode: `npm run dev` serves `public/` directly, `npm run build` copies it into `dist/`, and `npm run preview` serves those copied files from the same path. No separate server or route file is needed — just drop a game's build folder in `public/games/<name>/build/`.
+
 ### Embedding media
 
 - **Local files:** put images/media in `public/media/` and reference them by path (e.g. `/media/example.svg`).
