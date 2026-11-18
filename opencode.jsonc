@@ -12,5 +12,5 @@
 
     {"action": "shell", "resource": "npm *", "effect": "deny"},
     {"action": "shell", "resource": "npm run dev -- --test", "effect": "allow"},
-  ]
+  ],
 }

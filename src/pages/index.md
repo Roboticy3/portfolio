@@ -9,6 +9,8 @@ description: "Personal site and notes"
 # Welcome to my personal page
 I'm a programmer who doesn't like sitting still and I'm looking for work!
 
+Here is also [my itch page](roboticy3.itch.io) and my charts on [ireal](https://forums.irealpro.com/members/roboticy3.308853)
+
 To the side is an informal resume, but this is also a place where you can check
 out projects, play games, read ramblings, and even book me as a tutor or jazz pianist.
 
